@@ -1,0 +1,38 @@
+#
+
+      - name: Installation git
+        apt: name=git state=installed update_cache=true
+
+      - name: Creation de l utilisateur git
+        user: name=git shell=/usr/bin/git-shell uid=2001 group=www-data home=/var/git/
+
+      - name: Ajout clés
+        authorized_key: user=git key="{{ lookup('file', item) }}"
+        with_items:
+           - cle-pub-ssh.pub
+
+
+      - name: Initialisation des depots git
+        command: git --bare init /var/git/{{ item }}.git 
+        with_items:
+           - "{{ vhosts }}"
+        become: true
+        become_method: su
+        become_user: git
+        become_flags: '-s /bin/bash' 
+
+      - name: Depot du script de post-receive 
+        template: src=post-receive.j2 dest=/var/git/{{ item }}.git/hooks/post-receive owner=git group=www-data mode=0755
+        with_items:
+           - "{{ vhosts }}"
+
+      - name: Clonage des depots dans les docroot
+        #command: su - -s /bin/bash -c "cd /var/www/{{ item }} ; git clone /var/git/{{ item }} ." git creates=clone-{{ item }}-done
+        command: git clone /var/git/{{ item }}.git /var/www/{{ item }}
+        with_items:
+           - "{{ vhosts }}"
+        become: true
+        become_method: su
+        become_user: git
+        become_flags: '-s /bin/bash' 
+           

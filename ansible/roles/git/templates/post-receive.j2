@@ -1,0 +1,11 @@
+#!/bin/bash
+read oldrev newrev refname
+cd /var/www/{{ item }}/
+unset GIT_DIR
+git fetch --all
+git reset --hard origin/master
+echo "#############"
+echo ""
+echo "Deploiement en prod"
+echo ""
+echo "#############"
