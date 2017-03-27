@@ -46,11 +46,12 @@ Le fichier roles/nginx/vars/main.yml doit être configuré
 
 Copier la clé publique ssh qui devra accèder au dépôt git dans :
 
-     roles/git/files/cle-pub-ssh.pub
+     ansible/roles/git/files/cle-pub-ssh.pub
 
 ## Configuration du serveur
 
 Le serveur devra être installé avec une Debian 8.
+Se placer dans le répertoire ansible.
 
 ### Lancement de la configuration par ansible
 
