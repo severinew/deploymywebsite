@@ -18,13 +18,6 @@ Dependencies
 
 role nginx
 
-Example Playbook
-----------------
-
-License
--------
-
-BSD
 
 Author Information
 ------------------

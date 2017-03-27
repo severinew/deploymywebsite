@@ -11,14 +11,6 @@ Role Variables
 
 Les variables sont les vhost à configurer.
 
-Dependencies
-------------
-
-
-License
--------
-
-BSD
 
 Author Information
 ------------------

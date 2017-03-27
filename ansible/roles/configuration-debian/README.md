@@ -13,10 +13,6 @@ les actions suivantes :
 Role Variables
 --------------
 
-Example Playbook
-----------------
-
-
 Author Information
 ------------------
 Séverine Wiltgen
