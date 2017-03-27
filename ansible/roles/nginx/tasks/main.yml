@@ -1,0 +1,24 @@
+---
+# tasks file for nginx
+
+  - name: Installer nginx et paquets utiles
+    apt: name={{item}} state=installed update_cache=true
+    with_items:
+       - nginx
+       - apache2-utils
+
+  - name: Creation du docroot
+    file: path=/var/www/{{ item }} state=directory owner=www-data group=www-data mode=0775
+    with_items:
+       - "{{ vhosts }}"
+
+  - name: Fichier de configuration
+    template: src=nginx_vhost.conf.j2 dest=/etc/nginx/conf.d/{{ item }}.conf
+    with_items:
+       - "{{ vhosts }}"
+    notify: test nginx and restart
+
+  - name: mise en place du logrotate
+    copy: src=logrotate-nginx dest=/etc/logrotate.d/nginx backup=yes
+
+  - meta: flush_handlers
