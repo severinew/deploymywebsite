@@ -52,11 +52,14 @@ Copier la clé publique ssh qui devra accèder au dépôt git dans :
 
 Le serveur devra être installé avec une Debian 8.
 
-### Lancement des scripts ansible
+### Lancement de la configuration par ansible
 
 **Attention, après le passage du playbook ansible, le serveur
 sera accessible uniquement par clé ssh
 (blocage de l'accès par mot de passe pour root).**
+
+    ansible-playbook installation-web.yml
+
 
 ### Configuration du dépôt git local
 
