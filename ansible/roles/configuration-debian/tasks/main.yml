@@ -1,0 +1,54 @@
+---
+# tasks file for configuration-debian
+#
+
+    - name: Installer les paquets manquants apres une install OVH
+      apt: name={{item}} state=installed update_cache=true
+      with_items:
+         - vim
+         - curl
+         - pwgen
+         - rsync
+         - fail2ban
+         - unattended-upgrades
+         - apt-transport-https
+         - ca-certificates
+      #permet de ne lancer que certaines parties du playbook
+      tags:
+         - packages
+
+    - name: Mise en place du hostname
+      hostname: name={{ ansible_ssh_host }}
+
+# Mise en place des mises à jour automatiques Debian
+    - name: configuration de unattended-upgrades (copie de 02periodic)
+      copy: src=02periodic dest=/etc/apt/apt.conf.d/ backup=yes
+
+    - name: configuration de unattended-upgrades (conf)
+      lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes backrefs=yes state=present
+      with_items:
+         - { regexp: '//      "o=Debian,n=jessie";', line: '      "o=Debian,n=jessie";' }
+         - { regexp: '//      "o=Debian,n=jessie-updates";', line: '      "o=Debian,n=jessie-updates";' }
+             #- { regexp: '//      "o=Debian,n=jessie-proposed-updates";', line: '      "o=Debian,n=jessie-proposed-updates";' }
+         - { regexp: '//      "o=Debian,n=jessie,l=Debian-Security";', line: '      "o=Debian,n=jessie,l=Debian-Security";' }
+         - { regexp: '        "origin=Debian,codename=\$\{distro_codename\},label=Debian-Security";', line: '//    "origin=Debian,codename=${distro_codename},label=Debian-Security";' }
+
+    - name: copie .vimrc
+      copy: src=.vimrc dest=/root/
+   
+    - name: changement de l'affichage de l'history
+      lineinfile: dest=/root/.bashrc line="{{ item }}" backup=yes insertafter=EOF
+      with_items:
+         - export HISTTIMEFORMAT="%d/%m/%y %T "
+         - export HISTSIZE=10000
+         - PS1='${debian_chroot:+($debian_chroot)}\u@\H:\w\$ '
+
+# configuration de sécurité de la conf ssh
+    - name: Empecher la connexion ssh par passwd pour root (seule la connexion par cle est autorisee)
+      lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PermitRootLogin"
+              line="PermitRootLogin without-password"
+              state=present
+      notify: reload ssh
+
+    - meta: flush_handlers

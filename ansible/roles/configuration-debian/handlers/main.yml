@@ -1,0 +1,6 @@
+---
+# handlers file for configuration-debian
+
+    - name: reload ssh
+      service: name=ssh state=reloaded
+
