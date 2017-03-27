@@ -1,7 +1,7 @@
 # Deployer automatiquement son site web statique sur un serveur sous Debian
 
-Le playbook ansible fournis permet de configurer un serveur
-Debian 8 afin d'y deployer automatiquement un site web statique.
+Le playbook ansible fournit permet de configurer un serveur
+Debian 8 afin d'y déployer automatiquement un site web statique.
 Le serveur web utilisé est nginx.
 Un serveur git est installé, et un script hook post-receive 
 va permettre de déployer votre site dans le docroot.
@@ -28,7 +28,7 @@ Le serveur à installer doit être accessible sous ce nom
 ### Accès au serveur
 
 L'accès au serveur doit être possible par ssh 
-pour l'uitlisateur root (accès par clé).
+pour l'uitlisateur root et l'**accès doit se faire par clé**.
 
 ### Paramétrage
 
@@ -47,6 +47,16 @@ Le fichier roles/nginx/vars/main.yml doit être configuré
 Copier la clé publique ssh qui devra accèder au dépôt git dans :
 
      roles/git/files/cle-pub-ssh.pub
+
+## Configuration du serveur
+
+Le serveur devra être installé avec une Debian 8.
+
+### Lancement des scripts ansible
+
+**Attention, après le passage du playbook ansible, le serveur
+sera accessible uniquement par clé ssh
+(blocage de l'accès par mot de passe pour root).**
 
 ### Configuration du dépôt git local
 
